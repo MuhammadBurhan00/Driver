@@ -9,19 +9,22 @@ from selenium.webdriver.support import expected_conditions as EC
 
 app = Flask(__name__)
 
-# ✅ Hello World Route
-@app.route('/', methods=['GET'])
+@app.route('/')
 def hello():
-    return "Hello, World!"
+    return "✅ Scraper is running."
 
 @app.route('/scrape_youtube_post', methods=['GET'])
 def scrape_youtube_post():
     url = request.args.get('url')
     if not url:
-        return jsonify({"error": "❌ Please provide a YouTube post URL using the 'url' query parameter."}), 400
+        return jsonify({"error": "❌ Provide a YouTube post URL using the 'url' query parameter."}), 400
 
+    # ✅ Chrome options
     options = uc.ChromeOptions()
-    options.add_argument('--no-first-run --no-service-autorun --password-store=basic')
+    options.binary_location = "/usr/bin/google-chrome"
+    options.add_argument("--headless=new")
+    options.add_argument("--no-sandbox")
+    options.add_argument("--disable-dev-shm-usage")
     options.add_argument("--disable-blink-features=AutomationControlled")
     options.add_argument("--disable-infobars")
     options.add_argument("--start-maximized")
@@ -36,11 +39,9 @@ def scrape_youtube_post():
         )
         sleep(3)
 
-        # Get comments
         comment_elements = driver.find_elements(By.XPATH, '//yt-attributed-string[@id="content-text"]')
         comments = [el.text.strip() for el in comment_elements if el.text.strip()]
 
-        # Get authors
         author_elements = driver.find_elements(By.XPATH, '//ytd-item-section-renderer[@id="sections"]//a[@id="author-text"]')
         authors = []
         for author in author_elements:
@@ -57,8 +58,6 @@ def scrape_youtube_post():
                 else:
                     authors.append("[NO AUTHOR]")
 
-        print(authors, comments)
-        # Combine data
         combined = []
         for i in range(min(len(authors), len(comments))):
             combined.append({
@@ -77,4 +76,3 @@ def scrape_youtube_post():
 if __name__ == '__main__':
     port = int(os.environ.get("PORT", 5000))
     app.run(host='0.0.0.0', port=port)
-
