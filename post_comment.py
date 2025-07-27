@@ -8,6 +8,11 @@ from selenium.webdriver.support import expected_conditions as EC
 
 app = Flask(__name__)
 
+# ✅ Hello World Route
+@app.route('/hello', methods=['GET'])
+def hello():
+    return "Hello, World!"
+
 @app.route('/scrape_youtube_post', methods=['GET'])
 def scrape_youtube_post():
     url = request.args.get('url')
