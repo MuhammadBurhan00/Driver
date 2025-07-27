@@ -29,7 +29,10 @@ def scrape_youtube_post():
     options.add_argument("--disable-infobars")
     options.add_argument("--start-maximized")
 
-    driver = uc.Chrome(options=options)
+    driver = uc.Chrome(
+    options=options,
+    browser_executable_path="/usr/bin/google-chrome"
+)
 
     try:
         driver.get(url)
