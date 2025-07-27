@@ -1,14 +1,14 @@
     {
       "builds": [
         {
-          "src": "post_comment.py",
+          "src": "app.py",
           "use": "@vercel/python"
         }
       ],
       "routes": [
         {
           "src": "/(.*)",
-          "dest": "post_comment.py"
+          "dest": "app.py"
         }
       ]
     }
